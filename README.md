@@ -1,63 +1,94 @@
-# AI-Driven Spatio-Temporal Drift Detection (Astro-Biochemical)
+# AI-Driven Spatio-Temporal Drift Detection
 
-Production-style multi-domain platform for live drift detection across:
-- Space physics
-- Environmental chemistry
-- Biological proxies
+A full-stack monitoring platform for detecting live drift across space, environmental, and biological proxy signals.
 
-## Architecture
+The project combines a FastAPI backend, a React frontend, and real-world data feeds to surface anomaly signals, severity scoring, and location-aware drift reports.
 
-- `backend/` FastAPI data + drift engine
-- `frontend/` React + MapLibre Windy-style monitoring UI
-- `data/` raw and processed artifacts
-- `infra/` Docker Compose runtime
-- `scripts/` bootstrap scripts
+## What This Project Does
 
-## Live Data Sources Wired
+- Collects live multi-domain signals from public data providers
+- Detects drift using rolling baselines and change-detection methods
+- Exposes API endpoints for health, snapshots, reports, and training
+- Visualizes signals and anomalies in a React + MapLibre dashboard
 
-- Geomagnetic Kp index: NOAA SWPC
-- Solar wind speed: NOAA SWPC
-- Solar radiation intensity (X-ray flux): NOAA SWPC GOES
-- Cosmic ray flux proxy (proton flux): NOAA SWPC GOES
-- Ozone concentration: Open-Meteo Air Quality
-- Temperature and humidity: Open-Meteo Forecast
-- Atmospheric CO2: NOAA GML Mauna Loa trend CSV
-- Plant growth index: NASA/ORNL MODIS NDVI subset API
-- Animal movement proxy: GBIF occurrence search
-- Human circadian activity proxy: day-night thermal delta from hourly weather
-- Microbial activity proxy: NOAA ERDDAP chlorophyll-a (dataset availability dependent)
+## Tech Stack
 
-## Drift Detection
+- Backend: FastAPI, Python
+- Frontend: React, Vite, MapLibre
+- Drift logic: z-score, PSI-style shift scoring, ADWIN
+- Infra: Docker Compose, PowerShell dev scripts
 
-- Per-feature z-score vs baseline window
-- PSI-like normalized distribution shift score
-- Online ADWIN change detection (river)
-- Global drift score + severity (`low`, `moderate`, `high`, `critical`)
+## Project Structure
+
+- `backend/` API, schemas, services, tests
+- `frontend/` UI application
+- `data/` raw and processed data artifacts
+- `infra/` local runtime configuration
+- `scripts/` development and bootstrap scripts
+
+## Live Data Sources
+
+This project is wired to public live or regularly updated sources, including:
+
+- NOAA SWPC for geomagnetic and solar activity signals
+- Open-Meteo for air quality and weather signals
+- NOAA GML for atmospheric CO2 trend data
+- NASA/ORNL MODIS NDVI subset API for vegetation proxy signals
+- GBIF occurrence search for animal movement proxy data
+- NOAA ERDDAP chlorophyll-a where dataset availability allows
+
+## Drift Detection Approach
+
+- Rolling baseline comparisons
+- Per-feature z-score evaluation
+- PSI-like normalized distribution shift scoring
+- ADWIN online change detection
+- Global severity classification: `low`, `moderate`, `high`, `critical`
 
 ## Run Locally
 
-1. Copy `.env.example` to `.env` and fill API keys when needed.
-2. Fastest way (recommended):
-   - `powershell -ExecutionPolicy Bypass -File scripts\run-dev.ps1`
-   - New execution controller (better):
-   - `powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action start`
-   - `powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action status`
-   - `powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action logs`
-   - `powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action restart`
-   - `powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action stop`
-3. Manual mode if needed:
-   - Backend:
-   - `python -m venv .venv`
-   - `. .\.venv\Scripts\Activate.ps1`
-   - `pip install -r backend\requirements.txt`
-   - `uvicorn app.main:app --app-dir backend --reload`
-   - Frontend:
-   - `cd frontend`
-   - `Copy-Item .env.example .env -Force`
-   - `npm install`
-   - `npm run dev`
+### Quick Start
 
-Frontend opens at `http://localhost:5173`, backend at `http://localhost:8000`.
+1. Create your local environment file from `.env.example`.
+2. Start the app with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action start
+```
+
+Useful commands:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action status
+powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action logs
+powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action restart
+powershell -ExecutionPolicy Bypass -File scripts\devctl.ps1 -Action stop
+```
+
+### Manual Setup
+
+Backend:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r backend\requirements.txt
+uvicorn app.main:app --app-dir backend --reload
+```
+
+Frontend:
+
+```powershell
+cd frontend
+Copy-Item .env.example .env -Force
+npm install
+npm run dev
+```
+
+## Local URLs
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8000`
 
 ## API Endpoints
 
@@ -66,8 +97,8 @@ Frontend opens at `http://localhost:5173`, backend at `http://localhost:8000`.
 - `GET /api/v1/drift/report?lat=..&lon=..`
 - `POST /api/v1/models/train?hours=2160`
 
-## Important Notes
+## Notes
 
-- This stack only uses real online endpoints; no hardcoded demo values are injected.
-- Some biology signals are proxies where direct open real-time bio telemetry is not universally available without private data contracts.
-- To make biological channels fully direct (not proxy-based), connect authenticated datasets (e.g., Movebank studies, wearable APIs, lab sensor feeds) in `backend/app/services/providers.py`.
+- Real online data sources are used instead of hardcoded demo values.
+- Some biology-related signals are proxy-based because direct real-time bio telemetry is rarely public.
+- Sensitive local files such as `.env` are intentionally excluded from version control.
