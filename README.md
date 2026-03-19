@@ -103,8 +103,6 @@ npm run dev
 - Some biology-related signals are proxy-based because direct real-time bio telemetry is rarely public.
 - Sensitive local files such as `.env` are intentionally excluded from version control.
 
----
-
 ## My Contribution
 - Contributed to research and documentation
 - Analyzed drift detection concepts and system workflow
