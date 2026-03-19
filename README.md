@@ -102,3 +102,13 @@ npm run dev
 - Real online data sources are used instead of hardcoded demo values.
 - Some biology-related signals are proxy-based because direct real-time bio telemetry is rarely public.
 - Sensitive local files such as `.env` are intentionally excluded from version control.
+
+---
+
+## My Contribution
+- Contributed to research and documentation
+- Analyzed drift detection concepts and system workflow
+- Assisted in preparing the project report
+
+## Acknowledgement
+This repository is forked from the original project developed by a teammate as part of a group project. Core implementation was done by them.
